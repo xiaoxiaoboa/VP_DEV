@@ -33,12 +33,12 @@ namespace WindowsFormsApp1.Common {
         }
 
 
-        public void Connect() {
+        public async Task Connect() {
             if (_plc != null && _plc.IsConnected)
                 return;
             _plc = new Plc(CpuType.S71500, IpAddress, Port, 0, 1);
 
-            _plc.Open();
+            await _plc.OpenAsync();
 
             StartListening();
         }

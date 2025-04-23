@@ -290,7 +290,6 @@ namespace WindowsFormsApp1 {
                 }
 
 
-
                 // 传图像给toolblock
                 if (MyToolBlock.Instance.ToolBlock != null) {
                     if (!MyToolBlock.Instance.ToolBlock.Inputs.Contains("InputImage")) {
@@ -424,26 +423,21 @@ namespace WindowsFormsApp1 {
 
         // plc连接
         private async void connect_plc_Click(object sender, EventArgs e) {
-            var message = await Task.Run(() => {
-                try {
-                    PlcControl.Instance.Connect();
+            try {
+                await PlcControl.Instance.Connect();
 
-                    if (PlcControl.Instance.IsConnected) {
-                        PlcControl.Instance.PlcButtonPressed += OnPlcButtonPressed;
-                        RunOnUIThread(() => {
-                            connect_plc.Enabled = false;
-                            disconnect_plc.Enabled = true;
-                        });
-                        return "PLC连接成功";
-                    }
-
-                    throw new Exception("PLC连接失败");
+                if (PlcControl.Instance.IsConnected) {
+                    PlcControl.Instance.PlcButtonPressed += OnPlcButtonPressed;
+                    RunOnUIThread(() => {
+                        connect_plc.Enabled = false;
+                        disconnect_plc.Enabled = true;
+                    });
+                    Logger.Instance.AddLog("PLC连接成功");
                 }
-                catch (Exception exception) {
-                    return exception.Message;
-                }
-            });
-            Logger.Instance.AddLog(message);
+            }
+            catch (Exception exception) {
+                Logger.Instance.AddLog($"PLC连接失败{exception.Message}");
+            }
         }
 
         // PLC按钮被按下事件
